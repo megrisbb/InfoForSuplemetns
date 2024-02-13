@@ -1,0 +1,16 @@
+
+[
+  {"name": "sports-nutrition", "file": "sportsNutritionData.json"},
+  {"name": "dietary-supplements", "file": "dietarySupplementsData.json"},
+  {"name": "loss-weight", "file": "lossweightData.json"},
+  {"name": "vitamins", "file": "vitaminsData.json"},
+  {"name": "minerals", "file": "minerals.json"},
+  {"name": "hearth", "file": "hearth.json"},
+  {"name": "brain", "file": "brain.json"},
+  {"name": "liver", "file": "liver.json"},
+  {"name": "libido", "file": "libido.json"},
+  {"name": "vision", "file": "vision.json"},
+  {"name": "hair", "file": "hair.json"},
+  {"name": "acne", "file": "acneData.json"},
+  {"name": "aminoacides", "file": "aminoacidesData.json"}
+]

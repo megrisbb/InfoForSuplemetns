@@ -1,13 +1,19 @@
 function loadData() {
-    fetch('sportsNutritionData.json')
+    // Завантаження даних про спортивне харчування з файлу sportsNutritionData.json
+    fetch('data/sportsNutritionData.json')
+        // Парсинг отриманих даних у форматі JSON
         .then(response => response.json())
         .then(sportsNutritionData => {
-            fetch('brands.json')
+            // Завантаження даних про бренди з файлу brands.json
+            fetch('data/brands.json')
+                // Парсинг отриманих даних у форматі JSON
                 .then(response => response.json())
                 .then(brandsData => {
+                    // Об'єднання даних про спортивне харчування та бренди
                     const mergedData = sportsNutritionData.map(product => {
                         // Підтримка кількох brandId у вигляді масиву
                         const brandDetails = product.brandId.map(id =>
+                            // Знаходження даних про бренди за їх id
                             brandsData.find(brand => brand.id === id)
                         ).filter(Boolean); // Видалення будь-яких неіснуючих відповідностей
                         return {
@@ -15,49 +21,78 @@ function loadData() {
                             brandDetails
                         };
                     });
+                    // Заповнення списку продуктів
                     populateList('sports-nutrition-list', mergedData, 'sports-nutrition');
                 });
         })
+        // Обробка помилок під час завантаження даних
         .catch(error => console.error('Помилка завантаження даних:', error));
 }
 
 // Функція для завантаження даних з JSON файлу
 function loadDataFromJson(filePath, listId, category) {
+    // Завантаження даних з вказаного JSON файлу
     fetch(filePath)
+        // Парсинг отриманих даних у форматі JSON
         .then(response => response.json())
         .then(data => {
+            // Заповнення списку продуктів
             populateList(listId, data, category);
         })
+        // Обробка помилок під час завантаження даних
         .catch(error => console.error('Помилка завантаження даних:', error));
 }
 
 // Виклик функції для кожного набору даних
 // loadDataFromJson('sportsNutritionData.json', 'sports-nutrition-list', 'sports-nutrition');
-loadDataFromJson('dietarySupplementsData.json', 'dietary-supplements-list', 'dietary-supplements');
-loadDataFromJson('lossweightData.json', 'loss-weight-list', 'loss-weight');
-loadDataFromJson('vitaminsData.json', 'vitamins-list', 'vitamins');
+// Завантаження даних для категорії dietary-supplements
+loadDataFromJson('data/dietarySupplementsData.json', 'dietary-supplements-list', 'dietary-supplements');
+// Завантаження даних для категорії loss-weight
+loadDataFromJson('data/lossweightData.json', 'loss-weight-list', 'loss-weight');
+// Завантаження даних для категорії vitamins
+loadDataFromJson('data/vitaminsData.json', 'vitamins-list', 'vitamins');
+// Завантаження даних для категорії minerals
+loadDataFromJson("data/minerals.json", 'minerals-list', "minerals");
+// Завантаження даних для категорії hearth
+loadDataFromJson("data/hearth.json", 'hearth-list', "hearth");
+// Завантаження даних для категорії brain
+loadDataFromJson("data/brain.json", 'brain-list', "brain");
+// Завантаження даних для категорії liver
+loadDataFromJson("data/liver.json", 'liver-list', "liver");
+// Завантаження даних для категорії libido
+loadDataFromJson("data/libido.json", 'libido-list', "libido");
+// Завантаження даних для категорії vision
+loadDataFromJson("data/vision.json", 'vision-list', "vision");
+// Завантаження даних для категорії hair
+loadDataFromJson("data/hair.json", 'hair-list', "hair");
+// Завантаження даних для категорії acne
+loadDataFromJson("data/acneData.json", 'acne-list', "acne");
+// Завантаження даних для категорії aminoacides
+loadDataFromJson("data/aminoacidesData.json", 'aminoacides-list', "aminoacides");
 // Додайте виклики для інших категорій
 
-// Function to populate the list dynamically
 function populateList(listId, data, category) {
+    // Отримання списку за його ідентифікатором
     const list = document.getElementById(listId);
 
+    // Додавання кожного елемента даних до списку
     data.forEach(item => {
         const listItem = document.createElement("li");
         listItem.textContent = item.name;
+        // Додавання події click для відображення інформації про продукт
         listItem.addEventListener("click", () => displayProductInfo(item, category));
         list.appendChild(listItem);
     });
 }
 
-// Function to display product information and scroll to it
 function displayProductInfo(product, category) {
+    // Отримання блоку інформації про продукт, контейнера та оверлею
     const productInfo = document.querySelector("#product-info");
     const container = document.querySelector(".container");
     const overlay = document.createElement("div");
     overlay.classList.add("overlay");
 
-    // Set product information content
+    // Створення HTML коду для інформації про продукт
     let productInfoHTML = `
             <h3>${product.name}</h3>
             <p>${product.description}</p>
@@ -68,70 +103,68 @@ function displayProductInfo(product, category) {
         productInfoHTML += `<div class="brand-detail__container">`;
         product.brandDetails.forEach(brand => {
             productInfoHTML += `
-            <div class="brand-detail">
-                <p><strong>Назва бренду:</strong> ${brand.name}</p>
-                <p><strong>Опис бренду:</strong> ${brand.description}</p>
-                <p><strong>Склад:</strong> ${brand.percentage}</p>
+            <div "brand-detail"class=>
+                <p><b>${brand.id}.</b> <b> ${brand.name}</b></p>
+                <p><b>Інгредієнти:</b> ${brand.description}</p>
+                <p><b>Склад:</b> ${brand.percentage}</p>
             </div>`;
         });
         productInfoHTML += `</div>`;
     }
-
-
-    // else {
-    //     // Якщо інформація про бренд не знайдена
-    //     productInfoHTML += `<p>Інформація про бренд недоступна.</p>`;
-    // }
-
-    // Додавання переваг, якщо вони існують
-    for (let i = 1; i <= 10; i++) {
-        const benefit = product[`benefits${i}`];
-        if (benefit) {
-            productInfoHTML += `<p>${benefit}</p>`;
-        }
+    else {
+        // Якщо інформація про бренд не знайдена
+        productInfoHTML += `<p>Інформація про бренд недоступна.</p>`;
     }
 
+    // Додавання списку переваг, якщо він існує
+    let benefitAdded = false;
+    if (product.benefits && product.benefits.items && product.benefits.items.length > 0) {
+        productInfoHTML += `<h4>Ефекти:</h4><ul>`;
+        product.benefits.items.forEach(benefit => {
+            productInfoHTML += `<li>${benefit}</li>`;
+        });
+        productInfoHTML += `</ul>`;
+        benefitAdded = true;
+    }
+
+    // Додавання списку дозування, якщо він існує
     let dosageAdded = false;
-    for (let i = 1; i <= 10; i++) {
-        const dosage = product[`dosage${i}`];
-        if (dosage) {
-            if (!dosageAdded) {
-                productInfoHTML += `<h4>Дозування:</h4><ul>`;
-                dosageAdded = true;
-            }
+    if (product.dosage && product.dosage.items && product.dosage.items.length > 0) {
+        productInfoHTML += `<h4>Дозування:</h4><ul>`;
+        product.dosage.items.forEach(dosage => {
             productInfoHTML += `<li>${dosage}</li>`;
-        }
-    }
-    if (dosageAdded) {
-        productInfoHTML += `</ul>`; // Закриття списку, якщо були додані елементи дозування
+        });
+        productInfoHTML += `</ul>`;
+        dosageAdded = true;
     }
 
-    // // Додавання інформації про дозування, якщо вона існує
-    // if (product.dosage) {
-    //     productInfoHTML += `<p><strong>Як приймати:</strong> ${product.dosage}</p>`;
-    // }
+    // Перевірка чи була додана інформація про переваги та дозування
+    if (!benefitAdded && !dosageAdded) {
+        productInfoHTML += `<p>Переваги та інформація про дозування недоступні.</p>`;
+    }
+
+    // Відображення інформації про продукт
     productInfo.innerHTML = productInfoHTML;
 
-
-    // Add 'show' class to product information and overlay
+    // Додавання класу 'show' для відображення інформації про продукт та оверлею
     productInfo.classList.add("show");
     overlay.classList.add("show");
 
-    // Close the product information when clicking on the overlay
+    // Закриття інформації про продукт при кліку на оверлей
     overlay.addEventListener("click", () => {
         productInfo.classList.remove("show");
         overlay.classList.remove("show");
     });
 
-    // Append the overlay to the container
+    // Додавання оверлею до контейнера
     container.appendChild(overlay);
 
-    // Scroll to the product information
+    // Прокрутка до інформації про продукт
     productInfo.scrollIntoView({behavior: 'smooth'});
 }
 
+// Очікування завантаження вмісту сторінки
 document.addEventListener('DOMContentLoaded', (event) => {
+    // Завантаження даних
     loadData();
 });
-
-
